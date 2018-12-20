@@ -35,12 +35,16 @@ Sonar QubeをDocker Compose起動
 
 導入方法としては以下の2通りがある。
 - SonarQube Marketplaceからのインストール 
-以下参照 
-https://docs.sonarqube.org/7.4/instance-administration/marketplace/ 
+
+  以下参照
+  
+  https://docs.sonarqube.org/7.4/instance-administration/marketplace/ 
 
 - SonarQube のPluginディレクトリにPluginを配置
-以下ディレクトリ配下に導入したいPluginを格納し、SonarQube Serverを再起動し反映 
-./data/sonarqube/extensions/plugin
+
+  以下ディレクトリ配下に導入したいPluginを格納し、SonarQube Serverを再起動し反映
+  
+  ./data/sonarqube/extensions/plugin
 
 SonarQubeを日本語化したい場合は、以下Pluginを導入する
 - Japanese Pack : http://www.sonarplugins.com/l10nja
