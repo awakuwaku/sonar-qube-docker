@@ -11,7 +11,6 @@ SonarQubeをDocker Compose起動
 
 # ディレクトリ構成
 ```
-|── Jenkinsfile.groovy  : JenkinsでのSonarQube Server起動用スクリプト
 ├── docker-compose.yml  : SonarQube ServerのDocker Compose定義
 ├── data                : SonarQube ServerのDockerコンテナ動作に必要なデータ
 │      ├── sonarqube    : SonarQube Serverに必要なPlugin
