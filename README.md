@@ -1,5 +1,5 @@
 # sonar-qube-docker
-Sonar QubeをDocker Compose起動
+SonarQubeをDocker Compose起動
 
 
 # 前提
