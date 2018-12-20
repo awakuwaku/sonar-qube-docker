@@ -1,0 +1,42 @@
+version: '2'
+services:
+  # SonarQube Server用Database
+  # SonarQube ServerからMySQL8.xは接続出来ないため、MySQL5.7を利用
+  mysql-sonarqube:
+    container_name: mysql-sonarqube
+    image: mysql:5.7.24
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    volumes:
+      - "./data/mysql/init:/docker-entrypoint-initdb.d"
+      - "./data/mysql/db:/var/lib/mysql"
+    ports:
+      - "3306:3306"
+    networks:
+      - sonarqube-server-network
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=sonar
+      - MYSQL_USER=sonar
+      - MYSQL_PASSWORD=sonar
+
+  # SonarQube Server
+  sonarqube-server:
+    container_name: sonarqube-server
+    image: sonarqube:7.4-community
+    command: -Dsonar.web.context=/sonarqube
+    links:
+      - mysql-sonarqube:mysql
+    volumes:
+      - ./data/sonarqube/extensions/plugin:/opt/sonarqube/extensions/plugins
+    ports:
+      - "9000:9000"
+      - "9092:9092"
+    networks:
+      - sonarqube-server-network
+    environment:
+      - SONARQUBE_JDBC_USERNAME=sonar
+      - SONARQUBE_JDBC_PASSWORD=sonar
+      - "SONARQUBE_JDBC_URL=jdbc:mysql://mysql:3306/sonar?useUnicode=true&characterEncoding=utf8&useSSL=false"
+
+networks:
+  sonarqube-server-network:
