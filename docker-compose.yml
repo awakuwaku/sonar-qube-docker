@@ -1,31 +1,28 @@
 version: '3'
 services:
   # SonarQube Server用Database
-  # SonarQube ServerからMySQL8.xは接続出来ないため、MySQL5.7を利用
-  mysql-sonarqube:
-    container_name: mysql-sonarqube
-    image: mysql:5.7.24
-    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+  postgres-sonarqube:
+    container_name: postgres-sonarqube
+    image: postgres:13.0-alpine
     volumes:
-      - "./data/mysql/init:/docker-entrypoint-initdb.d"
-      - "./data/mysql/db:/var/lib/mysql"
+      - "./data/postgresql/init:/docker-entrypoint-initdb.d"
+      - "./data/postgresql/db:/var/lib/postgresql"
     ports:
-      - "3306:3306"
+      - "5432:5432"
     networks:
       - sonarqube-server-network
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=sonar
-      - MYSQL_USER=sonar
-      - MYSQL_PASSWORD=sonar
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=sonar
+      - POSTGRES_DB=sonar
 
   # SonarQube Server
   sonarqube-server:
     container_name: sonarqube-server
-    image: sonarqube:7.4-community
+    image: sonarqube:8.4.2-community
     command: -Dsonar.web.context=/sonarqube
     links:
-      - mysql-sonarqube:mysql
+      - postgres-sonarqube:postgres
     volumes:
       - ./data/sonarqube/extensions/plugin:/opt/sonarqube/extensions/plugins
     ports:
@@ -36,7 +33,7 @@ services:
     environment:
       - SONARQUBE_JDBC_USERNAME=sonar
       - SONARQUBE_JDBC_PASSWORD=sonar
-      - "SONARQUBE_JDBC_URL=jdbc:mysql://mysql:3306/sonar?useUnicode=true&characterEncoding=utf8&useSSL=false"
+      - "SONARQUBE_JDBC_URL=jdbc:postgresql://postgres-sonarqube:5432/sonar"
 
 networks:
   sonarqube-server-network:

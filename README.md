@@ -3,10 +3,10 @@ SonarQubeをDocker Compose起動
 
 
 # 前提
-- [SonarQube (7.4)](https://www.sonarqube.org/)
-- [MySQL (5.7.24)](https://www.mysql.com/)
-- [Docker (18.09.0)](https://www.docker.com/)
-- [Docker Compose (1.23.1)](https://docs.docker.com/compose/)
+- [SonarQube (8.4.2)](https://www.sonarqube.org/)
+- [PostgreSQL (13.0)](https://www.postgresql.org/)
+- [Docker (19.03.13)](https://www.docker.com/)
+- [Docker Compose (1.27.4)](https://docs.docker.com/compose/)
 
 
 # ディレクトリ構成
@@ -14,7 +14,7 @@ SonarQubeをDocker Compose起動
 ├── docker-compose.yml  : SonarQube ServerのDocker Compose定義
 ├── data                : SonarQube ServerのDockerコンテナ動作に必要なデータ
 │      ├── sonarqube    : SonarQube Serverに必要なPlugin
-│      ├── mysql        : SonarQube Server用MySQLのデータ
+│      ├── postgresql   : SonarQube Server用PostgreSQLのデータ
 ```
 
 # 利用方法
@@ -27,7 +27,7 @@ SonarQubeをDocker Compose起動
   docker-compose up -d --force-recreate sonarqube-server
   ```
 
-  注意事項) SonarQube Serverの起動はDocker Composeの定義にて、 `MySQL -> SonarQube Server` の順に起動するが、初回のコンテナ作成や実行する端末スペックが低い場合、 `MySQL` の起動完了前に `SonarQube Server` がDB接続を行い、起動に失敗することがある。 その場合、上記のSonarQube Server を起動のコマンドを再度実行し、コンテナを再起動すること。
+  注意事項) SonarQube Serverの起動はDocker Composeの定義にて、 `PostgreSQL -> SonarQube Server` の順に起動するが、初回のコンテナ作成や実行する端末スペックが低い場合、 `PostgreSQL` の起動完了前に `SonarQube Server` がDB接続を行い、起動に失敗することがある。 その場合、上記のSonarQube Server を起動のコマンドを再度実行し、コンテナを再起動すること。
 
 
 ## SonarQube ServerのPlugin導入
@@ -59,13 +59,13 @@ SonarQubeを日本語化したい場合は、以下Pluginを導入する
 
 2. SonarQube Server のアクセスURLに管理者ユーザにてログインし解析ルールを変更する。
 
-3. SonarQube Server用MySQLのデータをダンプする。
+3. SonarQube Server用PostgreSQLのデータをダンプする。
 
   ```shell
-  docker exec mysql-sonarqube sh -c 'mysqldump --all-databases -uroot -p"$MYSQL_ROOT_PASSWORD"' > ./data/mysql/init/1_mysql_dump.sql
+  docker exec postgres-sonarqube sh -c 'pg_dump -U sonar' > ./data/postgresql/init/1_postgresql_dump.sql
   ```
 
-  注意事項) SonarQube Serverの解析ルールはMySQLのデータとして保持されるため、MySQLのデータをダンプし、コンテナ作成時にロードさせることで反映させる。
+  注意事項) SonarQube Serverの解析ルールはPostgreSQLのデータとして保持されるため、PostgreSQLのデータをダンプし、コンテナ作成時にロードさせることで反映させる。
 
 
 ## SonarQube Serverのアクセス情報
