@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
   # SonarQube Server用Database
   # SonarQube ServerからMySQL8.xは接続出来ないため、MySQL5.7を利用
